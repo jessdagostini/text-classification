@@ -93,7 +93,7 @@ def multilayer_perceptron(input_tensor, weights, biases):
 # Definição do vocabulario
 vocabulario = Counter()
 # Datasets de avaliações
-train = pd.read_csv('datasets/imdb_labelled.csv', sep="\t", header=None)
+train = pd.read_csv('datasets/yelp_labelled.csv', sep="\t", header=None)
 test = pd.read_csv('datasets/amazon_cells_labelled.csv', sep="\t", header=None)
 
 # Criação do vocabulario
@@ -112,7 +112,7 @@ total_words = len(vocabulario)
 
 
 # Parametros
-learning_rates = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]     # Taxa de aprendizagem
+learning_rates = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]     # Taxa de aprendizagem
 training_epochs = 300   # Quantidade de épocas para treinamento
 batch_size = 350        # Tamanho do batch de palavras que será capturada por vez
 display_step = 100      # Para mostrar o erro
@@ -123,6 +123,7 @@ n_hidden_2 = 100       # Numero de neuronios na segunda camada
 n_input = total_words # Numero de neuronios para a entrada
 n_classes = 2         # Categorias: positiva(1) e negativa(0)
 accuracies = []
+l_rates = []
 
 # Placeholders necessarios para o tensorflow
 input_tensor = tf.placeholder(tf.float32,[None, n_input],name="input")
@@ -192,6 +193,7 @@ for learning_rate in learning_rates:
         batch_x_test,batch_y_test = get_batch(test,0,total_test_data)
         accur = accuracy.eval({input_tensor: batch_x_test, output_tensor: batch_y_test})
         print("Accuracy:", accuracy.eval({input_tensor: batch_x_test, output_tensor: batch_y_test}))
+        l_rates.append(learning_rate)
         accuracies.append(accur)
         
         x_10_texts,y_10_correct_labels = get_batch(test,0,10)
@@ -200,39 +202,8 @@ for learning_rate in learning_rates:
         print("Predicted categories:", classification)
         print("Correct categories:  ", np.argmax(y_10_correct_labels, 1))
         
-        # [NEW] Save the variables to disk
-        #save_path = saver.save(sess, "/tmp/model.ckpt")
-        #print("Model saved in path: %s" % save_path)
         print("\n")
 
-#FIM -- Treinando a rede -- 
-    
-#text_for_prediction = imdb[0][5]
-#print('text',text_for_prediction)
-#print("Text correct category:", imdb[1][5])
-#
-## Convert text to vector so we can send it to our model
-#vector_txt = text_to_vector(text)
-## Wrap vector like we do in get_batches()
-#input_array = np.array([vector_txt])
-#
-#saver = tf.train.Saver()
-#
-#with tf.Session() as sess:
-#    saver.restore(sess, "/tmp/model.ckpt")
-#    print("Model restored.")
-#    
-#    classification = sess.run(tf.argmax(prediction, 1), feed_dict={input_tensor: input_array})
-#    print("Predicted category:", classification)    
-#    
-#x_10_texts,y_10_correct_labels = get_batch(imdb,0,10)
-#
-#saver = tf.train.Saver()
-#
-#with tf.Session() as sess:
-#    saver.restore(sess, "/tmp/model.ckpt")
-#    print("Model restored.")
-#    
-#    classification = sess.run(tf.argmax(prediction, 1), feed_dict={input_tensor: x_10_texts})
-#    print("Predicted categories:", classification)
-#    print("Correct categories:", np.argmax(y_10_correct_labels, 1))
+plt.plot(l_rates, accuracies)
+plt.grid(True)
+plt.show()
