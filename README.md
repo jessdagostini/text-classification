@@ -44,6 +44,8 @@ Como executar:
 
 Com o Spyder aberto, procure pela aba "Explorador de Arquivos" e navegue até a pasta que contém os arquivos `imdb-classification.py` e os datasets.
 
+> REFERÊNCIAS
 
+- Dataset: 'From Group to Individual Labels using Deep Features', Kotzias et. al,. KDD 2015
 
-
+- Text Classification Model: https://medium.com/@dehhmesquita/classificando-textos-com-redes-neurais-e-tensorflow-5063784a1b31
