@@ -42,7 +42,7 @@ Como executar:
 
     7) Após a troca, volte para a Home e procure pelo Spyder. No seu primeiro acesso, provavelmente será necessário instalar ele.
 
-Com o Spyder aberto, procure pela aba "Explorador de Arquivos" e navegue até a pasta que contém os arquivos `imdb-classification.py` e os datasets.
+Com o Spyder aberto, procure pela aba "Explorador de Arquivos" e navegue até a pasta que contém os arquivos `text-classification.py` e os datasets.
 
 > REFERÊNCIAS
 

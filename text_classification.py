@@ -13,8 +13,6 @@ import pandas as pd
 import numpy as np
 # Counter é usado para guardar o vocabulario
 from collections import Counter
-import matplotlib as mp
-import matplotlib.pyplot as plt
 
 #INCIO -- Manipulação das informações para passar para a Rede Neural --
 
@@ -110,11 +108,30 @@ word2index = get_word_2_index(vocabulario)
 # Total de palavras do vocab
 total_words = len(vocabulario)
 
+batch_x,batch_y = get_batch(train,0,250)
+
 
 # Parametros
-learning_rates = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]     # Taxa de aprendizagem
+learning_rates = [0.01,
+                  0.02,
+                  0.03,
+                  0.04,
+                  0.05,
+                  0.06,
+                  0.07,
+                  0.08,
+                  0.09,
+                  0.1,
+                  0.2,
+                  0.3,
+                  0.4,
+                  0.5,
+                  0.6,
+                  0.7,
+                  0.8,
+                  0.9]     # Taxa de aprendizagem
 training_epochs = 300   # Quantidade de épocas para treinamento
-batch_size = 350        # Tamanho do batch de palavras que será capturada por vez
+batch_size = 250        # Tamanho do batch de palavras que será capturada por vez
 display_step = 100      # Para mostrar o erro
 
 # Parametros da rede neural
@@ -194,7 +211,7 @@ for learning_rate in learning_rates:
         accur = accuracy.eval({input_tensor: batch_x_test, output_tensor: batch_y_test})
         print("Accuracy:", accuracy.eval({input_tensor: batch_x_test, output_tensor: batch_y_test}))
         l_rates.append(learning_rate)
-        accuracies.append(accur)
+        accuracies.append(accur*100)
         
         x_10_texts,y_10_correct_labels = get_batch(test,0,10)
         classification = sess.run(tf.argmax(prediction, 1), feed_dict={input_tensor: x_10_texts})
@@ -203,7 +220,3 @@ for learning_rate in learning_rates:
         print("Correct categories:  ", np.argmax(y_10_correct_labels, 1))
         
         print("\n")
-
-plt.plot(l_rates, accuracies)
-plt.grid(True)
-plt.show()
