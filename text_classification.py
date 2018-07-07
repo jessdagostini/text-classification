@@ -68,12 +68,12 @@ def get_batch(df,i,batch_size):
 
 # O perceptron
 def multilayer_perceptron(input_tensor, weights, biases):
-    # Camada 1 com função de ativação sigmoid
+    # Camada 1 com função de ativação elu
     layer_1_multiplication = tf.matmul(input_tensor, weights['h1'])
     layer_1_addition = tf.add(layer_1_multiplication, biases['b1'])
     layer_1 = tf.nn.elu(layer_1_addition)
     
-    # Camada 2 com função de ativação Relu
+    # Camada 2 com função de ativação elu
     layer_2_multiplication = tf.matmul(layer_1, weights['h2'])
     layer_2_addition = tf.add(layer_2_multiplication, biases['b2'])
     layer_2 = tf.nn.elu(layer_2_addition)
@@ -85,8 +85,6 @@ def multilayer_perceptron(input_tensor, weights, biases):
     return out_layer_addition
 
 #FIM -- Rede Neural --
-    
-#INICIO -- Definição dos parametros para a treinamento da rede neural -- 
 
 # Definição do vocabulario
 vocabulario = Counter()
@@ -159,6 +157,7 @@ biases = {
     'out': tf.Variable(tf.random_normal([n_classes]))
 }
 
+#INICIO -- Treinando a rede iterando por todas as opções de taxas de aprendizagem --
 for learning_rate in learning_rates:
     print("Learning rate: " + str(learning_rate))
     # Montagem da rede neural
@@ -169,14 +168,7 @@ for learning_rate in learning_rates:
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
     
     # Iniciando as variáveis
-    init = tf.global_variables_initializer()
-    
-    #FIM -- Definição dos parametros para a treinamento da rede neural -- 
-    
-    # [NEW] Add ops to save and restore all the variables
-    #saver = tf.train.Saver()
-    
-    #INICIO -- Treinando a rede -- 
+    init = tf.global_variables_initializer()  
     
     # Executando a rede neural
     with tf.Session() as sess:
@@ -189,14 +181,10 @@ for learning_rate in learning_rates:
             # Itera por todos os batches
             for i in range(total_batch):
                 batch_x,batch_y = get_batch(train,i,batch_size)
-                # Run optimization op (backprop) and cost op (to get loss value)
                 # Roda a rede neural, levando em consideração o erro e a otimização
                 c,_ = sess.run([loss,optimizer], feed_dict={input_tensor: batch_x,output_tensor:batch_y})
-                #print("C:", c)
-                # Compute average loss
                 # Media de custo
                 avg_cost += c / total_batch
-            # Display logs per epoch step
             if epoch % display_step == 0:
                 print("Epoch:", '%04d' % (epoch), "loss=", \
                     "{:.9f}".format(avg_cost))
@@ -205,7 +193,6 @@ for learning_rate in learning_rates:
         #INICIO -- Testando o modelo para ver sua acurácia -- 
         correct_prediction = tf.equal(tf.argmax(prediction, 1), tf.argmax(output_tensor, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-        # Testando com o dataset da amazon
         total_test_data = len(test[1])
         batch_x_test,batch_y_test = get_batch(test,0,total_test_data)
         accur = accuracy.eval({input_tensor: batch_x_test, output_tensor: batch_y_test})
